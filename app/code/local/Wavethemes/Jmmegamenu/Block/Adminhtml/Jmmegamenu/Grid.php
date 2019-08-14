@@ -138,4 +138,33 @@
 		{
 		    return $this->getUrl('*/*/edit', array('id' => $row->getId()));
 		}
+		protected function _prepareMassaction()
+		{
+			$this->setMassactionIdField('menu_id');
+			$this->getMassactionBlock()->setFormFieldName('jmmegamenu');
+			$this->getMassactionBlock()->addItem('delete', array(
+	            'label'    => Mage::helper('jmmegamenu')->__('Delete'),
+	            'url'      => $this->getUrl('*/*/massDelete'),
+	            'confirm'  => Mage::helper('jmmegamenu')->__("Are you sure to delete this items and it's childrens?")
+	        ));
+			$this->getMassactionBlock()->addItem('duplicate', array(
+					'label'    => Mage::helper('jmmegamenu')->__('Duplicate'),
+					'url'      => $this->getUrl('*/*/massDuplicate')
+			));
+			$statuses = Mage::getSingleton('jmmegamenu/status')->getOptionArray();
+	        $this->getMassactionBlock()->addItem('status', array(
+	             'label'=> Mage::helper('jmmegamenu')->__('Change status'),
+	             'url'  => $this->getUrl('*/*/massStatus', array('_current'=>true)),
+	             'additional' => array(
+	                    'visibility' => array(
+	                         'name' => 'status',
+	                         'type' => 'select',
+	                         'class' => 'required-entry',
+	                         'label' => Mage::helper('jmmegamenu')->__('Status'),
+	                         'values' => $statuses
+	                     )
+	             )
+	        ));
+			return $this;
+		}
 }

@@ -26,7 +26,7 @@ ul.megamenu li {
 /* Styling ---*/
 .jm-megamenu ul.level0 {
 	margin: 0;
-	padding: 0
+	padding: 0;
 }
 
 .jm-megamenu ul.level0 li.mega {
@@ -39,11 +39,12 @@ ul.megamenu li {
 }
 
 .jm-megamenu ul.level0 li.mega a.mega {
-	color: #A7C6DD;
+	color: #fff;
 	display: block;
+	float: left;
 	font-size: 107%;
 	font-style: normal;
-	line-height: 28px;
+	line-height: 44px;
 	font-weight: bold;
 	min-height: 44px;
 	padding: 0 20px 0 19px;
@@ -75,7 +76,7 @@ ul.megamenu li {
 .jm-megamenu ul.level0 li.mega .icon-image {
 	float: left;
 	height: auto;
-	margin: 5px 3px 0 0;
+	margin: 13px 5px 0 0;
 	max-width: 20px;
 	vertical-align: middle;
 }
@@ -89,9 +90,11 @@ ul.megamenu li {
     font-size: 11px;
     font-weight: normal;
     line-height: 140%;
-    margin: -5px 0 0 25px;
+    margin: 0;
 	overflow: hidden;
     padding: 0;	
+	position: relative;
+	top: -11px;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	width: 100%;
@@ -116,16 +119,31 @@ ul.megamenu li {
 
 /* lv - 1 */
 .jm-megamenu ul.level1 li.mega a.mega {
+	border-bottom: 1px solid #e5e5e5;
 	color: #333;
+	float: none;
+	display: block;
+	padding: 0 10px;
+	margin: 0 20px 0 0;
+}
+
+.jm-megamenu ul.level1 li.mega a.mega.haschilds{
+	background: url(../images/bg-haschild.png) no-repeat 97% 20px;
+}
+
+.jm-megamenu ul.level1 li.mega a.mega.haschilds:active,
+.jm-megamenu ul.level1 li.mega a.mega.haschilds:focus,
+.jm-megamenu ul.level1 li.mega a.mega.haschilds:hover{
+	background-position: 97% -33px;
 }
 
 .jm-megamenu li.mega .childcontent{
 	display: block;
 	height: auto;
-	left: 0;
 	max-height: 0;
 	overflow: hidden;
 	position: absolute;
+	top: 60px;
 	box-shadow: 0 0 3px #666;
 	-box-shadow: 0 0 3px #666;
 	-moz-box-shadow: 0 0 3px #666;
@@ -139,22 +157,43 @@ ul.megamenu li {
 	-webkit-border-radius: 0 0 5px 5px; 
 }
 
+.jm-megamenu li.mega.mnuright .childcontent{
+	/*right: 0;*/
+}
+
 .jm-megamenu li.haschild:hover > .childcontent{
 	max-height: 1000px;
-	overflow: hidden;
+	overflow: visible;
 	-moz-transition: all 0.8s linear;
 	-o-transition: all 0.8s linear;
 	transition: all 0.8s linear;
 	-webkit-transition: all 0.8s linear
 }
 
+.jm-megamenu li.haschild:hover > .childcontent{
+	border: 1px solid #666\9;
+	border-top-color: #fff\9;
+}
+
+.jm-megamenu ul.level1 li.haschild .childcontent {
+	-moz-transition: all 0s linear;
+	-o-transition: all 0s linear;
+	transition: all 0s linear;
+	-webkit-transition: all 0s linear
+}
+
 .jm-megamenu ul.level1 li.haschild:hover > .childcontent {
-	left: 150px
+	border-top-color: #666;
+	left: 150px;
+	-moz-transition: all 0s linear;
+	-o-transition: all 0s linear;
+	transition: all 0s linear;
+	-webkit-transition: all 0s linear
 }
 
 .jm-megamenu ul.level1 li.mega {
-	float: none;
-	text-align: left
+	text-align: left;
+	width: 100%;
 }
 
 .jm-megamenu ul.level1 li.mega a {
@@ -162,12 +201,12 @@ ul.megamenu li {
 }
 
 .jm-megamenu ul.level1 .childcontent {
-	margin: -2em 0 0 0
+	margin: 0 0 0 0;
+	top: 0px;
 }
 
 /*lv 2*/
 .jm-megamenu ul.level2 li.mega {
-	border-bottom: 1px dotted #e5e5e5;
 	padding: 3px 0;
 }
 
@@ -178,11 +217,18 @@ ul.megamenu li {
 
 .jm-megamenu ul.level2 li.mega a.mega {
 	color: #333;
+	float: none;
 	font-size: 100%;
 	font-weight: normal;
+	display: block;
 	min-height: 13px;
 	padding: 0 10px;
 	text-decoration: none;
+	margin: 0;
+}
+
+.jm-megamenu ul.level2 li.mega li li a.mega {
+	line-height: 28px;
 }
 
 .jm-megamenu ul.level2 li.mega.active a.mega,
@@ -190,12 +236,17 @@ ul.megamenu li {
 .jm-megamenu ul.level2 li.mega a.mega:focus,
 .jm-megamenu ul.level2 li.mega a.mega:hover {
 	color: #E26703;
-	text-decoration: underline;
+	text-decoration: none;
 }
 
  /* Columns ---*/
 .jm-megamenu .megacol {
-	float: left
+	float: left;
+	margin: 0 20px 0 0;
+}
+
+.jm-megamenu .megacol.last {
+	margin: 0
 }
 
 
@@ -251,15 +302,28 @@ ul.megamenu li {
 .jm-megamenu .group {
 }
 .jm-megamenu .group-title {
-	border-bottom: 1px solid #e5e5e5;
+	color: #E26703;
+	font-size: 13px;
 	margin: 0 0 10px 0;
-	padding: 0 0 5px;
+	padding: 0 0;
 	overflow: hidden
 }
 .jm-megamenu .group-content{
-	padding: 0 10px 10px;
+	float: left;
+	padding: 0 0 10px;
 }
-.jm-megamenu ul.level1 li.mega div.group-title a.mega {}
+.jm-megamenu .group-content a.link-more {
+	text-decoration: none;
+}
+.jm-megamenu .group-content a.link-more:active,
+.jm-megamenu .group-content a.link-more:focus,
+.jm-megamenu .group-content a.link-more:hover {
+	text-decoration: underline;
+}
+.jm-megamenu ul.level1 li.mega div.group-title a.mega {
+	color: #E26703;
+	font-weight: bold;
+}
 .jm-megamenu .group-title .menu-desc {
 	padding-left: 0 !important
 }
@@ -282,13 +346,30 @@ ul.megamenu li {
 	min-height: 0;
 	width: auto
 }
+
+.jm-megamenu .products-grid {
+	background: none;
+	border-bottom: 0 none;
+	margin: 0 !important;	
+}
+
+.jm-megamenu .products-grid li.item {
+	margin: 0 8px 0 0;
+	padding: 10px 15px 10px
+}
+
+.jm-megamenu .products-grid li.item.last {
+	margin: 0;
+}
+
 .jm-megamenu .products-grid .product-name {
 	margin: 0 0 10px;
 	min-height: 100%;
 }
 
 .jm-megamenu .products-grid .product-name a{ 
-	color: #dddddd;
+	color: #333;
+	text-decoration: none;
 }
 .jm-megamenu .products-grid .product-name a:active,
 .jm-megamenu .products-grid .product-name a:focus,
@@ -297,22 +378,29 @@ ul.megamenu li {
 	text-decoration: none;
 }
 
-
 .jm-megamenu .products-grid .product-image {
 	float: left;
 	margin: 9px 0 10px;
 }
-.jm-megamenu .products-grid .ratings{ 
-	
+
+.jm-megamenu .products-grid .ratings {
+	margin: 0 0 10px;
 }
 
-.jm-megamenu .products-grid {
-  margin: 0 !important;
-  padding: 0 20px 0 0 !important;
+.jm-megamenu .products-grid .price{ 
+	color: #C76200;
+	font-size: 13px;
+	font-weight: bold;
+	margin: 5px 0;
 }
 
-.jm-megamenu .products-grid  .price-box .price {
-	color: #E26703;
+.jm-megamenu .group-content .buttons-set{
+	border: 0 none;
+	margin: 1em 0;
+}
+
+.jm-megamenu #childcontent15 .megacol{
+	margin: 0 !important;
 }
 
 /* Clearfix

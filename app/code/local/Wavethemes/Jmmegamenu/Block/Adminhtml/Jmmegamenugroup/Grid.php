@@ -73,4 +73,24 @@
 		{
 		    return $this->getUrl('*/*/index', array('groupid' => $row->getId()));
 		}
+		protected function _prepareMassaction()
+		{
+			$this->setMassactionIdField('menu_id');
+			$this->getMassactionBlock()->setFormFieldName('jmmegamenu');
+			$groupList = Mage::getSingleton('jmmegamenu/listmenugroup')->getOptionArray();
+			$this->getMassactionBlock()->addItem('duplicate', array(
+					'label'    => Mage::helper('jmmegamenu')->__('Duplicate'),
+					'url'  => $this->getUrl('*/*/massDuplicateGroup', array('_current'=>true)),
+					'additional' => array(
+							'visibility' => array(
+									'name' => 'duplicate_to',
+									'type' => 'select',
+									'class' => 'required-entry',
+									'label' => Mage::helper('jmmegamenu')->__('Duplicate To'),
+									'values' => $groupList
+							)
+					)
+			));
+			return $this;
+		}
 }

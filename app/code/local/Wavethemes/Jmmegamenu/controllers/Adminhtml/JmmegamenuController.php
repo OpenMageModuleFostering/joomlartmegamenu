@@ -447,4 +447,129 @@ class Wavethemes_Jmmegamenu_Adminhtml_JmmegamenuController extends Mage_Adminhtm
 
 	}
 	
+	public function massDuplicateAction() {
+		$menuIds = $this->getRequest()->getParam('jmmegamenu');
+		if(!is_array($menuIds)) {
+			Mage::getSingleton('adminhtml/session')->addError(Mage::helper('adminhtml')->__('Please select item(s)'));
+		} else {
+			try {
+				$menuModel = Mage::getModel('jmmegamenu/jmmegamenu');
+				foreach($menuIds as $menuId){
+					$menuModel->load($menuId);
+					$data= $menuModel->getData();
+					if(!isset($groupid)) $groupid= $data['menugroup'];
+					unset($data['menu_id']);
+					unset($data['menualias']);
+					$data['parent']='0';
+					$menuModel->setData($data);
+					$menuModel->setCreatedTime(now())->setUpdateTime(now());
+					$menuModel->save();
+				}
+				Mage::getSingleton('adminhtml/session')->addSuccess(
+				Mage::helper('adminhtml')->__(
+				'Total of %d record(s) were successfully duplicate', count($menuIds)
+				)
+				);
+			} catch (Exception $e) {
+				Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
+			}
+		}
+		$this->_redirect('*/*/index', array('groupid' => $groupid));
+	} 
+	public function massDeleteAction() {
+		$menuIds = $this->getRequest()->getParam('jmmegamenu');
+		if(!is_array($menuIds)) {
+			Mage::getSingleton('adminhtml/session')->addError(Mage::helper('adminhtml')->__('Please select item(s)'));
+		} else {
+			try {
+				$menuModel = Mage::getModel('jmmegamenu/jmmegamenu');
+				foreach($menuIds as $menuId){
+					if(!isset($groupid)){
+						$menuModel->load($menuId);
+						$groupid= $menuModel->getData('menugroup');	
+					} 
+					$this->deleteitems($menuId);
+				}
+				Mage::getSingleton('adminhtml/session')->addSuccess(
+				Mage::helper('adminhtml')->__(
+				'Total of %d record(s) were successfully delete', count($menuIds)
+				)
+				);
+			} catch (Exception $e) {
+				Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
+			}
+		}
+		$this->_redirect('*/*/index', array('groupid' => $groupid));
+} 
+	public function massStatusAction() {
+		$menuIds = $this->getRequest()->getParam('jmmegamenu');
+		if(!is_array($menuIds)) {
+			Mage::getSingleton('adminhtml/session')->addError(Mage::helper('adminhtml')->__('Please select item(s)'));
+		} else {
+			try {
+				$menuModel = Mage::getModel('jmmegamenu/jmmegamenu');
+				foreach ($menuIds as $menuId) {
+                    $menuModel->load($menuId);
+                    if(!isset($groupid)){
+						$groupid= $menuModel->getData('menugroup');	
+					} 
+                    $menuModel->setStatus($this->getRequest()->getParam('status'))
+                        ->setIsMassupdate(true)
+                        ->save();
+                }
+				Mage::getSingleton('adminhtml/session')->addSuccess(
+				Mage::helper('adminhtml')->__(
+				'Total of %d record(s) were successfully updated', count($menuIds)
+				)
+				);
+			} catch (Exception $e) {
+				Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
+			}
+		}
+		$this->_redirect('*/*/index', array('groupid' => $groupid));
+	}
+	public function massDuplicateGroupAction() {
+		$groupIds = $this->getRequest()->getParam('jmmegamenu');
+		$to_groupId = $this->getRequest()->getParam('duplicate_to');
+		if(!is_array($groupIds)) {
+			Mage::getSingleton('adminhtml/session')->addError(Mage::helper('adminhtml')->__('Please select item(s)'));
+		} else {
+			try {
+				foreach($groupIds as $groupId){
+					$this->findDuplicate(0,$groupId,0,$to_groupId);
+				}
+				Mage::getSingleton('adminhtml/session')->addSuccess(
+				Mage::helper('adminhtml')->__(
+				'Total of %d record(s) were successfully duplicate', count($menuIds)
+				)
+				);
+			} catch (Exception $e) {
+				Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
+			}
+		}
+		$this->_redirect('*/*/group');
+	}
+	private function findDuplicate($parent,$idgroup,$parentNew,$idgroupNew){
+		$menuModel = Mage::getModel('jmmegamenu/jmmegamenu');
+		$collections = $menuModel->getCollection()
+						->addFieldToFilter("menugroup",array('eq'=>$idgroup))
+						->addFieldToFilter("parent",array('eq'=>$parent));
+		foreach ($collections as $collection){
+			$data= $collection->getData();
+			$id= $data['menu_id'];
+			$idNew= $this->addDuplicate($data, $parentNew, $idgroupNew);
+			$this->findDuplicate($id, $idgroup,$idNew,$idgroupNew);
+		}
+	}
+	private function addDuplicate($data,$parentNew,$idgroupNew){
+		$menuModel = Mage::getModel('jmmegamenu/jmmegamenu');
+		unset($data['menu_id']);
+		unset($data['menualias']);
+		$data['menugroup']= $idgroupNew;
+		$data['parent']= $parentNew;
+		$menuModel->setData($data);
+		$menuModel->setCreatedTime(now())->setUpdateTime(now());
+		$menuModel->save();
+		return $menuModel->getId();
+	}
 } 
