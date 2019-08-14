@@ -14,6 +14,7 @@
 	    var $children = null;
 		var $items = null;
 		var $open = null;
+		var $general_config = array();
 		public function __construct($attributes = array()) {
 		  
 		   $this->params = new stdclass(); 
@@ -21,6 +22,12 @@
 		   $this->params->megamenu = 1;
 		   $this->params->startlevel = 0;
 		   $this->params->endlevel = 5;
+		   $this->general_config = $this->getGeneralConfig();
+		}
+		public function getGeneralConfig() {
+		   $config = array();
+		   $config['shownumproduct'] = Mage::getStoreConfig("wavethemes_jmmegamenu/wavethemes_jmmegamenu/shownumproduct");
+		   return $config;
 		}
 		
 	
@@ -38,6 +45,7 @@
 		
 		public function getList($collections){
 		    $active =  Mage::helper("jmmegamenu")->getActivemenu($collections);
+
 			if($active){
 			  $this->open = $active->tree;
 			}
@@ -380,7 +388,7 @@
 				else if ($level < $this->params->endlevel) $cls .= " haschild";
 			}
 			
-			if (isset($mitem->menu_id)&&isset($this->open))
+			if (isset($this->open))
 			$active = in_array($mitem->menu_id, $this->open);
 			else $active = false;
 			if (!preg_match ('/group/', $cls)) $cls .= ($active?" active":"");
@@ -401,12 +409,31 @@
 			$itembg = '';
 			//Add icon to item
 			$icon='';
+			
+			if ($item->getData('menutype')==0){
+				if ($item->getData('shownumproduct')==1||($item->getData('shownumproduct')==0&&$this->general_config['shownumproduct']==1)){
+				$storeId = Mage::app()->getStore()->getId();
+				$category = Mage::getModel('catalog/category')->load($item->getData('catid'));
+				$category->setIsAnchor(1);
+				$collection = Mage::getResourceModel('catalog/product_collection');
+				$collection->addCategoryFilter($category)
+							->addAttributeToSelect('id')
+							 ->setStoreId($storeId)
+							 ->addStoreFilter($storeId)
+							->addAttributeToFilter("status", Mage_Catalog_Model_Product_Status::STATUS_ENABLED)
+							->addAttributeToFilter("visibility", Mage_Catalog_Model_Product_Visibility::VISIBILITY_BOTH);
+
+				$tmpname .= '<span class="shownumproduct">('.$collection->getSize().')</span>';
+			}
+			}
+
+
 			if ($tmp->image !=""){
 				$image= preg_replace("/jmmegamenu\//", "", $tmp->image);
-				$icon = "<img class='icon-image' src='".Mage::getBaseUrl('media')."jmmegamenu/".$image."' alt='".$image."'/>";
-			}
-			
-			$txt = $icon . '<span class="menu-title">' . $tmpname . '</span>';			
+				$txt = '<span class="menu-title" style="background-image: url('.Mage::getBaseUrl('media')."jmmegamenu/".$image.');">' . $tmpname . '</span>';
+			}else {
+				$txt = '<span class="menu-title">' . $tmpname . '</span>';			
+			}		
 			
 			//Add page title to item
 			if (isset($tmp->megaparams->desc)&&$tmp->megaparams->desc) {

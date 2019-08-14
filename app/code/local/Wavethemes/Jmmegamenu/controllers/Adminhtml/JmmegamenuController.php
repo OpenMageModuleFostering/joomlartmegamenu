@@ -45,7 +45,7 @@ class Wavethemes_Jmmegamenu_Adminhtml_JmmegamenuController extends Mage_Adminhtm
 			   $menuModel->setData("mega_cols",1);
 			   $menuModel->setData("showtitle",1);
 			}
-
+            
 			Mage::register('jmmegamenu_data', $menuModel);
 
 			$this->loadLayout();
@@ -177,6 +177,11 @@ class Wavethemes_Jmmegamenu_Adminhtml_JmmegamenuController extends Mage_Adminhtm
 	                     throw new Exception('The alias already used by another menu item.');
 	                }
                 }
+				
+				$postData['link'] = str_replace ( Mage::getBaseUrl() , "" , $postData['link'] );
+                $postData['category'] = str_replace ( Mage::getBaseUrl() , "" , $postData['category'] );
+                $postData['cms'] = str_replace ( Mage::getBaseUrl() , "" , $postData['cms'] );
+				
 				$menuModel = Mage::getModel('jmmegamenu/jmmegamenu');
 				$helper = Mage::helper('jmmegamenu');
 				if( $this->getRequest()->getParam('id') <= 0 ) {
@@ -360,6 +365,7 @@ class Wavethemes_Jmmegamenu_Adminhtml_JmmegamenuController extends Mage_Adminhtm
 
 		$groupid = $this->getRequest()->getParam('menugroup');
 		$activecat = $this->getRequest()->getParam('activecat');
+		$activecms = $this->getRequest()->getParam('activecms');
         $helper = Mage::helper('jmmegamenu'); 
 
         $groupModel = Mage::getModel('jmmegamenu/jmmegamenugroup')->load($groupid);
@@ -386,7 +392,7 @@ class Wavethemes_Jmmegamenu_Adminhtml_JmmegamenuController extends Mage_Adminhtm
 		 $clist = array();
 		 foreach($catlist as $id => $cat){
 		    $category = Mage::getModel('catalog/category')->load($id);
-			$url =  $category->getUrl();
+			$url =  str_replace ( Mage::getBaseUrl() , "" , $category->getUrl() );
 		    $clist[$url] = $cat; 
 		 }
 		 $response = array();
@@ -413,8 +419,14 @@ class Wavethemes_Jmmegamenu_Adminhtml_JmmegamenuController extends Mage_Adminhtm
 	     if(!strpos($baseurl,"index.php")) $baseurl .= "index.php/";
 		 foreach($helper->getListcms($storeid) as $page){
 		    $url =  $baseurl.$page;
-			$cmspages .= '<option value="'.$url.'">'.$page.'</option>';
+		    if($page == $activecms){
+               $cmspages .= '<option selected value="'.$url.'">'.$page.'</option>';	  
+		    }else{
+		       $cmspages .= '<option value="'.$url.'">'.$page.'</option>';	
+		    }
+			
 		 } 
+		 
 		 $cmspages .= "</select>";    
 		 $response["cmspage"] = $cmspages; 
 

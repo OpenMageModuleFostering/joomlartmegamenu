@@ -129,6 +129,9 @@
                                 order = $('parent');
                                 groupurl = baseurl+'/jmmegamenu/adminhtml_jmmegamenu/ajax?menugroup='+group.getValue()+'&menuid='+$('menu_id').getValue();
                                 groupurl = groupurl+'&activecat='+category.getValue();
+                                var cmstext = cms.selectedIndex >= 0 ? cms.options[cms.selectedIndex].innerHTML : undefined;
+                             	groupurl = groupurl+'&activecms='+cmstext;
+                             	
                              	new Ajax.Request(groupurl, {
 								  onSuccess: function(response) {
 								    // Handle the response content...

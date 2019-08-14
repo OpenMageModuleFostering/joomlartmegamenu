@@ -43,6 +43,16 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </animation>
+                        <shownumproduct translate="label">
+                            <label>Show Qty of product</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>20</sort_order>
+                            <comment>Apply for Category Menu Type only</comment>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </shownumproduct>
 					</fields>
             	</wavethemes_jmmegamenu>
             </groups>

@@ -59,7 +59,7 @@
 			 $clist = array();
 			 foreach($catlist as $id => $cat){
 			    $category = Mage::getModel('catalog/category')->load($id);
-				$url =  $category->getUrl();
+				$url =  str_replace ( Mage::getBaseUrl() , "" , $category->getUrl() );
 			    $clist[$url] = $cat; 
 			 }
 
@@ -72,8 +72,7 @@
 			 //cmspages list 
 			 $cmspages = array();
 			 foreach($helper->getListcms() as $page){
-			    $url = $baseurl.$page;
-				$cmspages[$url] = $page;
+				$cmspages[$page] = $page;
 			 } 
 			 
 			  $this->setForm($form);
@@ -168,6 +167,27 @@
 					'size' => 10,
 					'name' => 'category',
 					'values' => $clist,
+				));
+
+				$fieldset->addField('shownumproduct', 'select', array(
+					'label' => Mage::helper('jmmegamenu')->__('Show number products of Category'),
+					'required' => false,
+					'size' => 10,
+					'name' => 'shownumproduct',
+					'values' => array(
+						array(
+							'value' => 0,
+							'label' => Mage::helper('jmmegamenu')->__('Use General Setting'),
+						),
+						array(
+							'value' => 1,
+							'label' => Mage::helper('jmmegamenu')->__('Enable'),
+						),
+						array(
+							'value' => 2,
+							'label' => Mage::helper('jmmegamenu')->__('Disable'),
+							),
+					),
 				));
 				
 				$fieldset->addField('cms', 'select', array(
@@ -298,6 +318,14 @@
 						'wysiwyg'   => false,
 						'name' => 'description',
 				));
+
+				// Append dependency javascript
+				$this->setChild('form_after', $this->getLayout()
+				    ->createBlock('adminhtml/widget_form_element_dependence')
+				        ->addFieldMap('menutype', 'menutype')
+				        ->addFieldMap('shownumproduct', 'shownumproduct')
+				        ->addFieldDependence('shownumproduct', 'menutype', 0) // 2 = 'Specified'
+				);
 			
 				if ( Mage::getSingleton('adminhtml/session')->getJmMegamenuData() )
 				{
